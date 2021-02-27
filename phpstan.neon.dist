@@ -1,0 +1,22 @@
+includes:
+    - vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+
+    paths:
+        - app
+        - config
+        - database
+        - routes
+        - tests
+
+    level: 8 # 0 - 8 (higher = more strict)
+
+    ignoreErrors:
+        - '/^Call to an undefined method Mockery\\ExpectationInterface\|Mockery\\HigherOrderMessage::.+\(\)\.$/'
+
+    checkFunctionNameCase: true
+    checkMissingIterableValueType: false
+    checkModelProperties: true
+
+    reportUnmatchedIgnoredErrors: false
