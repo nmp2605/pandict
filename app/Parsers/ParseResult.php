@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 abstract class ParseResult
 {
-    public function __invoke(object $result): Result
+    public function handle(object $result): Result
     {
         return Result::make([
             'details' => $this->parseDetails($result),

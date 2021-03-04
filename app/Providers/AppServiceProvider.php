@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Http\Clients\Dicio\DicioClientInterface;
+use App\Http\Clients\Dicio\LiveDicioClient;
+use App\Http\Clients\Dicio\MockDicioClient;
 use App\Http\Clients\DicionarioAberto\DicionarioAbertoClientInterface;
 use App\Http\Clients\DicionarioAberto\LiveDicionarioAbertoClient;
 use App\Http\Clients\DicionarioAberto\MockDicionarioAbertoClient;
@@ -30,6 +33,18 @@ class AppServiceProvider extends ServiceProvider
             return new LiveDicionarioAbertoClient(
                 new GuzzleClient([
                     'base_uri' => config('services.dicionario_aberto.base_uri'),
+                ]),
+            );
+        });
+
+        $this->app->bind(DicioClientInterface::class, function (Application $app): DicioClientInterface {
+            if ($app->environment(['local', 'testing']) && config('services.dicio.force_live_client') === false) {
+                return new MockDicioClient($app->make(\Faker\Generator::class));
+            }
+
+            return new LiveDicioClient(
+                new GuzzleClient([
+                    'base_uri' => config('services.dicio.base_uri'),
                 ]),
             );
         });

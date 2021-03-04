@@ -44,7 +44,7 @@ class DicionarioAbertoSearchTest extends TestCase
                 ],
             ]);
 
-        $results = ($this->search)('word');
+        $results = $this->search->handle('word');
 
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertInstanceOf(Result::class, $results[0]);
@@ -89,7 +89,7 @@ class DicionarioAbertoSearchTest extends TestCase
                 ],
             ]);
 
-        $results = ($this->search)('word');
+        $results = $this->search->handle('word');
 
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertInstanceOf(Result::class, $results[0]);

@@ -16,7 +16,7 @@ Laravel is a web application framework with expressive, elegant syntax. It was c
 
 ## About Web-Scraping
 
-Some of the sources that are used offer an API and some require the use of web-scraping techniques. That means we need to parse the HTML of the page containing the result, converting it to an understandable format. In this project, PHP's [DOMDocument](https://www.php.net/manual/en/class.domdocument.php) is used to parse.
+Some of the sources that are used offer an API and some require the use of web-scraping techniques. That means we need to parse the HTML of the page containing the result, converting it to an understandable format. In this project, PHP's [DOMDocument](https://www.php.net/manual/en/class.domdocument.php) is used to parse, and some XPath knowledge is required.
 
 ## About Parallelism
 

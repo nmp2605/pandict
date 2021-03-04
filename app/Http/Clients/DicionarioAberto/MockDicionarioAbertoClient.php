@@ -17,7 +17,7 @@ class MockDicionarioAbertoClient implements DicionarioAbertoClientInterface
 
     public function search(string $word): array
     {
-        return Collection::make(range(0, rand(0, 2)))
+        return Collection::make([0, 1, 2])
             ->map(fn (): object => $this->generateResultForWord($word))
             ->toArray();
     }

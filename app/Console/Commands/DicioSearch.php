@@ -2,26 +2,26 @@
 
 namespace App\Console\Commands;
 
-use App\Actions\Searches\DicionarioAbertoSearch as SearchAction;
+use App\Actions\Searches\DicioSearch as SearchAction;
 use App\Models\Result;
 use Illuminate\Console\Command;
 use RuntimeException;
 
-class DicionarioAbertoSearch extends Command
+class DicioSearch extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'dicionario-aberto:search {word}';
+    protected $signature = 'dicio:search {word}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Searches for a word using the API from DicionarioAberto.';
+    protected $description = 'Searches for a word using Dicio.';
 
     private SearchAction $search;
 

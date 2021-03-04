@@ -19,7 +19,7 @@ class ParseDicionarioAbertoResultTest extends TestCase
 
     private function parseResultWithXml(string $xml): Result
     {
-        return ($this->parser)((object) [
+        return $this->parser->handle((object) [
             'xml' => $xml,
         ]);
     }

@@ -12,7 +12,7 @@ class ParseDicionarioAbertoResult extends ParseResult
 {
     private SimpleXMLElement $entry;
 
-    public function __invoke(object $result): Result
+    public function handle(object $result): Result
     {
         $parsedEntry = simplexml_load_string($result->xml);
 
@@ -22,12 +22,7 @@ class ParseDicionarioAbertoResult extends ParseResult
 
         $this->entry = $parsedEntry;
 
-        return parent::__invoke($result);
-    }
-
-    private function clearString(string $value): string
-    {
-        return str_replace(['_'], '', $value);
+        return parent::handle($result);
     }
 
     public function parseDetails(object $result): Collection
@@ -61,5 +56,10 @@ class ParseDicionarioAbertoResult extends ParseResult
     public function parseSource(object $result): string
     {
         return 'Dicionario Aberto';
+    }
+
+    private function clearString(string $value): string
+    {
+        return str_replace(['_'], '', $value);
     }
 }

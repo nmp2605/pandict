@@ -4,7 +4,7 @@ namespace App\Http\Clients\Dicio;
 
 use DOMDocument;
 
-interface Dicio
+interface DicioClientInterface
 {
     /**
      * Searches for an entry on Dicio's website.

@@ -35,4 +35,9 @@ return [
         'force_live_client' => env('DICIONARIO_ABERTO_FORCE_LIVE_CLIENT', false),
     ],
 
+    'dicio' => [
+        'base_uri' => env('DICIO_BASE_URI'),
+        'force_live_client' => env('DICIO_FORCE_LIVE_CLIENT'),
+    ],
+
 ];
