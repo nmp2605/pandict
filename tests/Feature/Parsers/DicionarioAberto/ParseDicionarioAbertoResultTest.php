@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Parsers\DicionarioAberto;
+namespace Tests\Feature\Parsers\DicionarioAberto;
 
 use App\Models\Result;
 use App\Parsers\DicionarioAberto\ParseDicionarioAbertoResult;

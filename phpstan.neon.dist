@@ -19,4 +19,20 @@ parameters:
     checkMissingIterableValueType: false
     checkModelProperties: true
 
+    implicitThrows: false
+
     reportUnmatchedIgnoredErrors: false
+
+    exceptions:
+      check:
+        missingCheckedExceptionInThrows: true
+        tooWideThrowType: true
+
+      uncheckedExceptionRegexes:
+        - '/^GuzzleHttp\\Exception\\GuzzleException$/'
+
+      uncheckedExceptionClasses:
+        - 'InvalidArgumentException'
+        - 'Illuminate\Contracts\Container\BindingResolutionException'
+        - 'PHPUnit\Framework\Exception'
+        - 'Symfony\Component\HttpKernel\Exception\HttpException'

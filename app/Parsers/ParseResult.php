@@ -7,12 +7,13 @@ use Illuminate\Support\Collection;
 
 abstract class ParseResult
 {
-    public function handle(object $result): Result
+    public function handle(string $word, object $result): Result
     {
         return Result::make([
             'details' => $this->parseDetails($result),
             'entries' => $this->parseEntries($result),
-            'source' => $this->parseSource($result),
+            'source_name' => $this->parseSourceName($result),
+            'source_url' => $this->parseSourceUrl($word, $result),
         ]);
     }
 
@@ -20,5 +21,7 @@ abstract class ParseResult
 
     abstract public function parseEntries(object $result): Collection;
 
-    abstract public function parseSource(object $result): string;
+    abstract public function parseSourceName(object $result): string;
+
+    abstract public function parseSourceUrl(string $word, object $result): string;
 }

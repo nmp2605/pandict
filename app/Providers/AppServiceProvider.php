@@ -25,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
     /** Bootstrap any application services. */
     public function boot(): void
     {
+        if ($this->app->environment('local')) {
+            $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+        }
+
         $this->app->bind(DicionarioAbertoClientInterface::class, function (Application $app): DicionarioAbertoClientInterface {
             if ($app->environment(['local', 'testing']) && config('services.dicionario_aberto.force_live_client') === false) {
                 return new MockDicionarioAbertoClient($app->make(\Faker\Generator::class));

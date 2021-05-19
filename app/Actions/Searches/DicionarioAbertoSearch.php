@@ -22,16 +22,11 @@ class DicionarioAbertoSearch
     public function handle(string $word): Collection
     {
         try {
-            $response = $this->dicionarioAberto->search($word);
-        } catch (DicionarioAbertoClientException $e) {
+            $results = $this->dicionarioAberto->search($word);
+        } catch (DicionarioAbertoClientException) {
             return Collection::make();
         }
 
-        return $this->parseResults($response);
-    }
-
-    private function parseResults(array $results): Collection
-    {
         return Collection::make($results)
             ->map(fn (object $result): Result => $this->parseDicionarioAbertoResult->handle($result));
     }

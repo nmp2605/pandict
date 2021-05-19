@@ -39,6 +39,10 @@ class DicioSearch
         }
     }
 
+    private function validateResult(DOMDocument $resultPage): bool
+    {
+    }
+
     private function parseResults(DOMDocument $resultPage, string $word): Collection
     {
         return Collection::make($this->getResultNodes($resultPage, $word))

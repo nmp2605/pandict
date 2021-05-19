@@ -14,7 +14,7 @@ class ParseDicioResult extends ParseResult
     {
         $details = Collection::make();
 
-        $this->loopThroughResult($result, function (object $element) use (&$details) {
+        $this->loopThroughSiblings($result, function (object $element) use (&$details) {
             if ($this->isGrammarGroup($element)) {
                 $details->push(['name' => 'classe gramatical', 'value' => $element->textContent]);
             }
@@ -32,7 +32,7 @@ class ParseDicioResult extends ParseResult
     {
         $entries = Collection::make();
 
-        $this->loopThroughResult($result, function (object $element) use (&$entries) {
+        $this->loopThroughSiblings($result, function (object $element) use (&$entries) {
             if ($this->isEntry($element)) {
                 $entries->push($element->textContent);
             }
@@ -42,12 +42,18 @@ class ParseDicioResult extends ParseResult
     }
 
     /** @param DOMElement $result */
-    public function parseSource(object $result): string
+    public function parseSourceName(object $result): string
     {
         return 'Dicio';
     }
 
-    private function loopThroughResult(DOMElement $result, callable $callback): void
+    /** @param DOMElement $result */
+    public function parseSourceUrl(string $word, object $result): string
+    {
+        return 'Dicio';
+    }
+
+    private function loopThroughSiblings(DOMElement $result, callable $callback): void
     {
         $currentElement = $result;
         $shouldLoop = true;
