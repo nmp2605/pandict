@@ -7,7 +7,7 @@ use Throwable;
 
 class DicionarioAbertoException extends Exception
 {
-    private const CODE_CLIENT_FAILURE = 0;
+    public const CODE_CLIENT_FAILURE = 0;
 
     public static function clientFailure(?Throwable $previous = null): self
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Feature\Parsers\Dicio;
+namespace Tests\Feature\Parsers\Result\Dicio;
 
-use App\Parsers\Dicio\ParseDicioResult;
+use App\Parsers\Result\Dicio\ParseDicioResult;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
@@ -49,7 +49,7 @@ class ParseDicioResultTest extends TestCase
         <span class="cl">Class</span>
         HTML);
 
-        $result = $this->parser->handle($element);
+        $result = $this->parser->handle('word', $element);
 
         $this->assertEquals('classe gramatical', $result->details[0]['name']);
         $this->assertEquals('Class', $result->details[0]['value']);
@@ -64,7 +64,7 @@ class ParseDicioResultTest extends TestCase
         <span class="etim">Etymology</span>
         HTML);
 
-        $result = $this->parser->handle($element);
+        $result = $this->parser->handle('word', $element);
 
         $this->assertEquals('classe gramatical', $result->details[0]['name']);
         $this->assertEquals('Class', $result->details[0]['value']);
@@ -81,7 +81,7 @@ class ParseDicioResultTest extends TestCase
         <span class="etim">Etimologia (origem da palavra word). Etymology</span>
         HTML);
 
-        $result = $this->parser->handle($element);
+        $result = $this->parser->handle('word', $element);
 
         $this->assertEquals('classe gramatical', $result->details[0]['name']);
         $this->assertEquals('Class', $result->details[0]['value']);
@@ -97,7 +97,7 @@ class ParseDicioResultTest extends TestCase
         <span>This is an entry</span>
         HTML);
 
-        $result = $this->parser->handle($element);
+        $result = $this->parser->handle('word', $element);
 
         $this->assertEquals('This is an entry', $result->entries[0]);
     }
@@ -111,7 +111,7 @@ class ParseDicioResultTest extends TestCase
         <span>This is another one</span>
         HTML);
 
-        $result = $this->parser->handle($element);
+        $result = $this->parser->handle('word', $element);
 
         $this->assertEquals('This is an entry', $result->entries[0]);
         $this->assertEquals('This is another one', $result->entries[1]);
@@ -124,21 +124,33 @@ class ParseDicioResultTest extends TestCase
         <span class="cl">Class</span>
         HTML);
 
-        $result = $this->parser->handle($element);
+        $result = $this->parser->handle('word', $element);
 
         $this->assertCount(0, $result->entries);
     }
 
     /** @test */
-    public function it_should_parse_the_source(): void
+    public function it_should_parse_the_source_name(): void
     {
         $element = $this->getFirstElement(<<<HTML
         <span class="cl">Class</span>
         HTML);
 
-        $result = $this->parser->handle($element);
+        $result = $this->parser->handle('word', $element);
 
-        $this->assertEquals('Dicio', $result->source);
+        $this->assertEquals('Dicio', $result->source_name);
+    }
+
+    /** @test */
+    public function it_should_parse_the_source_url(): void
+    {
+        $element = $this->getFirstElement(<<<HTML
+        <span class="cl">Class</span>
+        HTML);
+
+        $result = $this->parser->handle('word', $element);
+
+        $this->assertEquals(sprintf('%s/%s', config('services.dicio.base_uri'), 'word'), $result->source_url);
     }
 
     /** @test */
@@ -152,7 +164,7 @@ class ParseDicioResultTest extends TestCase
         <span>This is a completely different result</span>
         HTML);
 
-        $result = $this->parser->handle($element);
+        $result = $this->parser->handle('word', $element);
 
         $this->assertCount(1, $result->details);
         $this->assertCount(1, $result->entries);

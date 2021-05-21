@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Actions\Searches;
 
-use App\Actions\Searches\DicioSearch;
 use App\Http\Clients\Dicio\DicioClientInterface;
 use App\Models\Result;
+use App\Services\Dicio\Dicio;
 use DOMDocument;
 use Illuminate\Support\Collection;
 use Mockery\MockInterface;
@@ -13,15 +13,15 @@ use Tests\TestCase;
 class DicioSearchTest extends TestCase
 {
     /** @var DicioClientInterface&MockInterface */
-    private $dicio;
-    private DicioSearch $search;
+    private $client;
+    private Dicio $service;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->dicio = $this->mock(DicioClientInterface::class);
-        $this->search = $this->app->make(DicioSearch::class);
+        $this->client = $this->mock(DicioClientInterface::class);
+        $this->service = $this->app->make(Dicio::class);
     }
 
     /** @test */
@@ -62,12 +62,12 @@ class DicioSearchTest extends TestCase
         </html>
         HTML);
 
-        $this->dicio->shouldReceive('search')
+        $this->client->shouldReceive('search')
             ->with('word')
             ->once()
             ->andReturn($document);
 
-        $results = $this->search->handle('word');
+        $results = $this->service->search('word');
 
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertInstanceOf(Result::class, $results[0]);
@@ -122,12 +122,12 @@ class DicioSearchTest extends TestCase
         </html>
         HTML);
 
-        $this->dicio->shouldReceive('search')
+        $this->client->shouldReceive('search')
             ->with('word')
             ->once()
             ->andReturn($document);
 
-        $results = $this->search->handle('word');
+        $results = $this->service->search('word');
 
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertInstanceOf(Result::class, $results[0]);

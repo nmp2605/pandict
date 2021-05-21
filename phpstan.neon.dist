@@ -24,15 +24,15 @@ parameters:
     reportUnmatchedIgnoredErrors: false
 
     exceptions:
-      check:
-        missingCheckedExceptionInThrows: true
-        tooWideThrowType: true
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
 
-      uncheckedExceptionRegexes:
-        - '/^GuzzleHttp\\Exception\\GuzzleException$/'
+        uncheckedExceptionRegexes:
+            - '/^GuzzleHttp\\Exception\\GuzzleException$/'
 
-      uncheckedExceptionClasses:
-        - 'InvalidArgumentException'
-        - 'Illuminate\Contracts\Container\BindingResolutionException'
-        - 'PHPUnit\Framework\Exception'
-        - 'Symfony\Component\HttpKernel\Exception\HttpException'
+        uncheckedExceptionClasses:
+            - 'InvalidArgumentException'
+            - 'Illuminate\Contracts\Container\BindingResolutionException'
+            - 'PHPUnit\Framework\Exception'
+            - 'Symfony\Component\HttpKernel\Exception\HttpException'

@@ -11,8 +11,10 @@ class Result extends Model
 {
     use HasFactory;
 
+    /** @var array */
     public $fillable = ['details', 'entries', 'source_name', 'source_url'];
 
+    /** @var array */
     protected $casts = [
         'details' => 'collection',
         'entries' => 'collection',

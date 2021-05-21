@@ -1,13 +1,25 @@
 <?php
 
-namespace Tests\Unit\Exceptions;
+namespace Tests\Feature\Services\DicionarioAberto;
 
-use App\Exceptions\DicioException;
+use App\Services\Dicio\DicioException;
 use Exception;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class DicioExceptionTest extends TestCase
 {
+    /** @test */
+    public function it_should_get_a_client_failure(): void
+    {
+        $previousException = new Exception('Test exception');
+
+        $exception = DicioException::clientFailure($previousException);
+
+        $this->assertEquals('Failed to fetch a result page from the client.', $exception->getMessage());
+        $this->assertEquals(DicioException::CODE_CLIENT_FAILURE, $exception->getCode());
+        $this->assertEquals($previousException, $exception->getPrevious());
+    }
+
     /** @test */
     public function it_should_get_a_no_result_class_found_failure(): void
     {

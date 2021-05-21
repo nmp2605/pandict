@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Parsers\Dicio;
+namespace App\Parsers\Result\Dicio;
 
-use App\Parsers\ParseResult;
+use App\Parsers\Result\ParseResult;
 use DOMElement;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class ParseDicioResult extends ParseResult
 {
+    private const ETYMOLOGY_BASE_TEXT = 'Etimologia (origem da palavra';
+
     /** @param DOMElement $result */
     public function parseDetails(object $result): Collection
     {
@@ -50,7 +52,7 @@ class ParseDicioResult extends ParseResult
     /** @param DOMElement $result */
     public function parseSourceUrl(string $word, object $result): string
     {
-        return 'Dicio';
+        return sprintf('%s/%s', config('services.dicio.base_uri'), $word);
     }
 
     private function loopThroughSiblings(DOMElement $result, callable $callback): void
@@ -99,7 +101,7 @@ class ParseDicioResult extends ParseResult
 
     private function clearEtymology(string $etymology): string
     {
-        if (str_contains($etymology, 'Etimologia (origem da palavra') === false) {
+        if (str_contains($etymology, self::ETYMOLOGY_BASE_TEXT) === false) {
             return $etymology;
         }
 

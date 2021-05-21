@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Parsers;
+namespace App\Parsers\Result;
 
 use App\Models\Result;
+use App\Parsers\ParserInterface;
 use Illuminate\Support\Collection;
 
-abstract class ParseResult
+abstract class ParseResult implements ParserInterface
 {
+    /** {@inheritdoc} */
     public function handle(string $word, object $result): Result
     {
         return Result::make([
