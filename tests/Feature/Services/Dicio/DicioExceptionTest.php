@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Services\DicionarioAberto;
+namespace Tests\Feature\Services\Dicio;
 
 use App\Services\Dicio\DicioException;
 use Exception;

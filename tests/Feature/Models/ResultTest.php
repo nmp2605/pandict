@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Models;
+namespace Tests\Feature\Models;
 
 use App\Models\Result;
 use App\Models\Word;
@@ -32,9 +32,9 @@ class ResultTest extends TestCase
     public function it_should_cast_to_the_right_types(): void
     {
         $result = Result::make([
-            'details' => [],
-            'entries' => [],
-        ]);
+            'details' => Collection::make([]),
+            'entries' => Collection::make([]),
+        ])->refresh();
 
         $this->assertInstanceOf(Collection::class, $result->details);
         $this->assertInstanceOf(Collection::class, $result->entries);

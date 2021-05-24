@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Actions\Searches;
+namespace Tests\Feature\Services\Dicio;
 
 use App\Http\Clients\Dicio\DicioClientInterface;
 use App\Models\Result;
@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
-class DicioSearchTest extends TestCase
+class DicioTest extends TestCase
 {
     /** @var DicioClientInterface&MockInterface */
     private $client;

@@ -2,15 +2,13 @@
 
 namespace Tests\Feature\Console\Commands;
 
-use Tests\TestCase;
-use RuntimeException;
-use Mockery\MockInterface;
-use Illuminate\Testing\PendingCommand;
 use App\Services\DicionarioAberto\DicionarioAberto;
-use App\Http\Clients\DicionarioAberto\DicionarioAbertoClientInterface;
 use App\Services\DicionarioAberto\DicionarioAbertoException;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
+use Illuminate\Testing\PendingCommand;
+use Mockery\MockInterface;
+use Tests\TestCase;
 
 class DicionarioAbertoSearchTest extends TestCase
 {
