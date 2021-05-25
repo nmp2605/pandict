@@ -1,20 +1,22 @@
 <?php
 
-namespace App\Parsers\Dicio;
+namespace App\Parsers\Result\Dicio;
 
-use App\Parsers\ParseResult;
+use App\Parsers\Result\ParseResult;
 use DOMElement;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class ParseDicioResult extends ParseResult
 {
+    private const ETYMOLOGY_BASE_TEXT = 'Etimologia (origem da palavra';
+
     /** @param DOMElement $result */
     public function parseDetails(object $result): Collection
     {
         $details = Collection::make();
 
-        $this->loopThroughResult($result, function (object $element) use (&$details) {
+        $this->loopThroughSiblings($result, function (object $element) use (&$details) {
             if ($this->isGrammarGroup($element)) {
                 $details->push(['name' => 'classe gramatical', 'value' => $element->textContent]);
             }
@@ -32,7 +34,7 @@ class ParseDicioResult extends ParseResult
     {
         $entries = Collection::make();
 
-        $this->loopThroughResult($result, function (object $element) use (&$entries) {
+        $this->loopThroughSiblings($result, function (object $element) use (&$entries) {
             if ($this->isEntry($element)) {
                 $entries->push($element->textContent);
             }
@@ -42,12 +44,18 @@ class ParseDicioResult extends ParseResult
     }
 
     /** @param DOMElement $result */
-    public function parseSource(object $result): string
+    public function parseSourceName(object $result): string
     {
         return 'Dicio';
     }
 
-    private function loopThroughResult(DOMElement $result, callable $callback): void
+    /** @param DOMElement $result */
+    public function parseSourceUrl(string $word, object $result): string
+    {
+        return sprintf('%s/%s', config('services.dicio.base_uri'), $word);
+    }
+
+    private function loopThroughSiblings(DOMElement $result, callable $callback): void
     {
         $currentElement = $result;
         $shouldLoop = true;
@@ -93,7 +101,7 @@ class ParseDicioResult extends ParseResult
 
     private function clearEtymology(string $etymology): string
     {
-        if (str_contains($etymology, 'Etimologia (origem da palavra') === false) {
+        if (str_contains($etymology, self::ETYMOLOGY_BASE_TEXT) === false) {
             return $etymology;
         }
 

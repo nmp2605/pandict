@@ -2,68 +2,43 @@
 
 namespace App\Console\Commands;
 
-use App\Actions\Searches\DicioSearch as SearchAction;
-use App\Models\Result;
+use App\Services\Dicio\Dicio;
+use App\Services\Dicio\DicioException;
 use Illuminate\Console\Command;
-use RuntimeException;
 
 class DicioSearch extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
+    /** @var string */
     protected $signature = 'dicio:search {word}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
+    /** @var string */
     protected $description = 'Searches for a word using Dicio.';
 
-    private SearchAction $search;
+    private Dicio $dicio;
 
     /** Create a new command instance. */
-    public function __construct(SearchAction $search)
+    public function __construct(Dicio $dicio)
     {
         parent::__construct();
 
-        $this->search = $search;
+        $this->dicio = $dicio;
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
-    public function handle()
+    public function handle(): int
     {
+        /** @var string $word */
         $word = $this->argument('word');
 
-        if (is_string($word) === false) {
-            throw new RuntimeException('The word is not a string.');
+        try {
+            $results = $this->dicio->search($word);
+        } catch (DicioException $exception) {
+            $this->error($exception->getMessage());
+
+            return Command::FAILURE;
         }
 
-        $results = $this->search->handle($word);
+        $this->info($results->toJson());
 
-        $results->each(function (Result $result): void {
-            foreach ($result->details as $detail) {
-                $this->line(sprintf('%s: %s', $detail['name'], $detail['value']));
-            }
-
-            if ($result->details->isNotEmpty()) {
-                $this->line("\n");
-            }
-
-            foreach ($result->entries as $entry) {
-                $this->line(sprintf('- %s', $entry));
-            }
-
-            $this->line("\n");
-        });
-
-        return 0;
+        return Command::SUCCESS;
     }
 }

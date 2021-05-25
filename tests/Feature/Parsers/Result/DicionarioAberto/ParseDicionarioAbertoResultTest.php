@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit\Parsers\DicionarioAberto;
+namespace Tests\Feature\Parsers\Result\DicionarioAberto;
 
 use App\Models\Result;
-use App\Parsers\DicionarioAberto\ParseDicionarioAbertoResult;
+use App\Parsers\Result\DicionarioAberto\ParseDicionarioAbertoResult;
 use Tests\TestCase;
 
 class ParseDicionarioAbertoResultTest extends TestCase
@@ -19,7 +19,7 @@ class ParseDicionarioAbertoResultTest extends TestCase
 
     private function parseResultWithXml(string $xml): Result
     {
-        return $this->parser->handle((object) [
+        return $this->parser->handle('word', (object) [
             'xml' => $xml,
         ]);
     }
@@ -118,12 +118,22 @@ class ParseDicionarioAbertoResultTest extends TestCase
     }
 
     /** @test */
-    public function it_should_parse_the_source(): void
+    public function it_should_parse_the_source_name(): void
     {
         $result = $this->parseResultWithXml(<<<XML
         <entry></entry>
         XML);
 
-        $this->assertEquals('Dicionario Aberto', $result->source);
+        $this->assertEquals('Dicionario Aberto', $result->source_name);
+    }
+
+    /** @test */
+    public function it_should_parse_the_source_url(): void
+    {
+        $result = $this->parseResultWithXml(<<<XML
+        <entry></entry>
+        XML);
+
+        $this->assertEquals(sprintf('%s/word/%s', config('services.dicionario_aberto.base_uri'), 'word'), $result->source_url);
     }
 }

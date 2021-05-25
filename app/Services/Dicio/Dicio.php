@@ -1,35 +1,37 @@
 <?php
 
-namespace App\Actions\Searches;
+namespace App\Services\Dicio;
 
-use App\Exceptions\DicioException;
 use App\Http\Clients\Dicio\DicioClientException;
 use App\Http\Clients\Dicio\DicioClientInterface;
 use App\Models\Result;
-use App\Parsers\Dicio\ParseDicioResult;
+use App\Parsers\Result\Dicio\ParseDicioResult;
+use App\Services\DictionaryServiceInterface;
 use DOMDocument;
 use DOMElement;
 use DOMNodeList;
 use DOMXPath;
 use Illuminate\Support\Collection;
 
-class DicioSearch
+class Dicio implements DictionaryServiceInterface
 {
-    private DicioClientInterface $dicio;
-    private ParseDicioResult $parseDicioResult;
-
-    public function __construct(DicioClientInterface $dicio, ParseDicioResult $parseDicioResult)
-    {
-        $this->dicio = $dicio;
-        $this->parseDicioResult = $parseDicioResult;
+    public function __construct(
+        private DicioClientInterface $dicio,
+        private ParseDicioResult $parser
+    ) {
     }
 
-    public function handle(string $word): Collection
+    /**
+     * Searches for a word using Dicio's web pages.
+     *
+     * @throws DicioException
+     */
+    public function search(string $word): Collection
     {
         try {
             $response = $this->dicio->search($word);
-        } catch (DicioClientException $e) {
-            return Collection::make();
+        } catch (DicioClientException $exception) {
+            throw DicioException::clientFailure($exception);
         }
 
         try {
@@ -39,14 +41,22 @@ class DicioSearch
         }
     }
 
+    /** @throws DicioException */
+    private function searchForValidResult(string $word): DOMDocument
+    {
+        // Explore different word pages to make sure the result pops up.
+    }
+
+    /** @throws DicioException */
     private function parseResults(DOMDocument $resultPage, string $word): Collection
     {
         return Collection::make($this->getResultNodes($resultPage, $word))
             ->filter(fn (object $element): bool => $this->isResultStart($element))
-            ->map(fn (DOMElement $element): Result => $this->parseDicioResult->handle($element))
+            ->map(fn (DOMElement $element): Result => $this->parser->handle($word, $element))
             ->values();
     }
 
+    /** @throws DicioException */
     private function getResultNodes(DOMDocument $resultsPage, string $word): DOMNodeList
     {
         $xpath = new DOMXPath($resultsPage);

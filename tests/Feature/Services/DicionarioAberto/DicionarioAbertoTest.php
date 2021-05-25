@@ -1,32 +1,34 @@
 <?php
 
-namespace Tests\Feature\Actions\Searches;
+namespace Tests\Feature\Services\DicionarioAberto;
 
-use App\Actions\Searches\DicionarioAbertoSearch;
+use App\Http\Clients\DicionarioAberto\DicionarioAbertoClientException;
 use App\Http\Clients\DicionarioAberto\DicionarioAbertoClientInterface;
 use App\Models\Result;
+use App\Services\DicionarioAberto\DicionarioAberto;
+use App\Services\DicionarioAberto\DicionarioAbertoException;
 use Illuminate\Support\Collection;
 use Mockery\MockInterface;
 use Tests\TestCase;
 
-class DicionarioAbertoSearchTest extends TestCase
+class DicionarioAbertoTest extends TestCase
 {
     /** @var DicionarioAbertoClientInterface&MockInterface */
-    private $dicionarioAberto;
-    private DicionarioAbertoSearch $search;
+    private $client;
+    private DicionarioAberto $service;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->dicionarioAberto = $this->mock(DicionarioAbertoClientInterface::class);
-        $this->search = $this->app->make(DicionarioAbertoSearch::class);
+        $this->client = $this->mock(DicionarioAbertoClientInterface::class);
+        $this->service = $this->app->make(DicionarioAberto::class);
     }
 
     /** @test */
     public function it_should_fetch_and_parse_a_single_result(): void
     {
-        $this->dicionarioAberto->shouldReceive('search')
+        $this->client->shouldReceive('search')
             ->with('word')
             ->once()
             ->andReturn([
@@ -44,7 +46,7 @@ class DicionarioAbertoSearchTest extends TestCase
                 ],
             ]);
 
-        $results = $this->search->handle('word');
+        $results = $this->service->search('word');
 
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertInstanceOf(Result::class, $results[0]);
@@ -59,7 +61,7 @@ class DicionarioAbertoSearchTest extends TestCase
     /** @test */
     public function it_should_fetch_and_parse_more_than_one_result(): void
     {
-        $this->dicionarioAberto->shouldReceive('search')
+        $this->client->shouldReceive('search')
             ->with('word')
             ->once()
             ->andReturn([
@@ -89,7 +91,7 @@ class DicionarioAbertoSearchTest extends TestCase
                 ],
             ]);
 
-        $results = $this->search->handle('word');
+        $results = $this->service->search('word');
 
         $this->assertInstanceOf(Collection::class, $results);
         $this->assertInstanceOf(Result::class, $results[0]);
@@ -107,5 +109,19 @@ class DicionarioAbertoSearchTest extends TestCase
         $this->assertEquals(['name' => 'etimologia', 'value' => '(Gr. word)'], $results[1]->details[2]);
         $this->assertEquals('Other entry', $results[1]->entries[0]);
         $this->assertEquals('One more', $results[1]->entries[1]);
+    }
+
+    /** @test */
+    public function it_should_throw_a_dicionario_aberto_exception(): void
+    {
+        $this->expectException(DicionarioAbertoException::class);
+        $this->expectExceptionCode(DicionarioAbertoException::CODE_CLIENT_FAILURE);
+
+        $this->client->shouldReceive('search')
+            ->with('word')
+            ->once()
+            ->andThrow(DicionarioAbertoClientException::searchFailure('word'));
+
+        $this->service->search('word');
     }
 }

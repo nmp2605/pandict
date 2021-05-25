@@ -14,9 +14,29 @@ parameters:
 
     ignoreErrors:
         - '/^Call to an undefined method Mockery\\ExpectationInterface\|Mockery\\HigherOrderMessage::.+\(\)\.$/'
+        -
+            message: "#^Method .+ throws checked exception .+ but it's missing from the PHPDoc @throws tag.$#"
+            path: tests/*
 
     checkFunctionNameCase: true
     checkMissingIterableValueType: false
     checkModelProperties: true
 
+    implicitThrows: false
+
     reportUnmatchedIgnoredErrors: false
+
+    exceptions:
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
+
+        uncheckedExceptionRegexes:
+            - '/^GuzzleHttp\\Exception\\GuzzleException$/'
+
+        uncheckedExceptionClasses:
+            - 'InvalidArgumentException'
+            - 'Illuminate\Contracts\Container\BindingResolutionException'
+            - 'PHPUnit\Framework\Exception'
+            - 'RuntimeException'
+            - 'Symfony\Component\HttpKernel\Exception\HttpException'

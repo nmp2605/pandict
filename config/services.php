@@ -31,13 +31,13 @@ return [
     ],
 
     'dicionario_aberto' => [
-        'base_uri' => env('DICIONARIO_ABERTO_BASE_URI'),
+        'base_uri' => env('DICIONARIO_ABERTO_BASE_URI', 'https://api.dicionario-aberto.net'),
         'force_live_client' => env('DICIONARIO_ABERTO_FORCE_LIVE_CLIENT', false),
     ],
 
     'dicio' => [
-        'base_uri' => env('DICIO_BASE_URI'),
-        'force_live_client' => env('DICIO_FORCE_LIVE_CLIENT'),
+        'base_uri' => env('DICIO_BASE_URI', 'https://www.dicio.com.br'),
+        'force_live_client' => env('DICIO_FORCE_LIVE_CLIENT', false),
     ],
 
 ];

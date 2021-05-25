@@ -14,7 +14,8 @@ class CreateResultsTable extends Migration
             $table->unsignedBigInteger('word_id');
             $table->longText('details');
             $table->longText('entries');
-            $table->string('source');
+            $table->string('source_name');
+            $table->string('source_url');
             $table->timestamps();
 
             $table->foreign('word_id')
