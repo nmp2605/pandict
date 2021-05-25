@@ -13,32 +13,35 @@ class ParseDicionarioAbertoResult extends ParseResult
 
     public function handle(string $word, object $result): Result
     {
-        $this->entry = simplexml_load_string($result->xml);
+        $this->entry = simplexml_load_string($result->xml) ?: null;
 
         return parent::handle($word, $result);
     }
 
     public function parseDetails(object $result): Collection
     {
-        if ($this->entry === false) {
+        if ($this->entry === null) {
             return Collection::make();
         }
 
         return Collection::make()
-            ->when(isset($this->entry->sense->gramGrp), function (Collection $results): Collection {
-                return $results->push(['name' => 'gênero', 'value' => $this->clearString($this->entry->sense->gramGrp)]);
-            })
-            ->when(isset($this->entry->sense->usg), function (Collection $results): Collection {
-                return $results->push(['name' => 'uso', 'value' => $this->clearString($this->entry->sense->usg)]);
-            })
-            ->when(isset($this->entry->etym), function (Collection $results): Collection {
-                return $results->push(['name' => 'etimologia', 'value' => $this->clearString($this->entry->etym)]);
-            });
+            ->when(
+                isset($this->entry->sense->gramGrp),
+                fn (Collection $results): Collection => $results->push(['name' => 'gênero', 'value' => $this->clearString($this->entry->sense->gramGrp)])
+            )
+            ->when(
+                isset($this->entry->sense->usg),
+                fn (Collection $results): Collection => $results->push(['name' => 'uso', 'value' => $this->clearString($this->entry->sense->usg)])
+            )
+            ->when(
+                isset($this->entry->etym),
+                fn (Collection $results): Collection => $results->push(['name' => 'etimologia', 'value' => $this->clearString($this->entry->etym)])
+            );
     }
 
     public function parseEntries(object $result): Collection
     {
-        if ($this->entry === false || empty($this->entry->sense->def)) {
+        if ($this->entry === null || empty($this->entry->sense->def)) {
             return Collection::make();
         }
 

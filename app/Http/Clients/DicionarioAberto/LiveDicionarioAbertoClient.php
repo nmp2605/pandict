@@ -5,6 +5,7 @@ namespace App\Http\Clients\DicionarioAberto;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\RequestException;
 use JsonException;
+use RuntimeException;
 
 class LiveDicionarioAbertoClient implements DicionarioAbertoClientInterface
 {
@@ -24,9 +25,13 @@ class LiveDicionarioAbertoClient implements DicionarioAbertoClientInterface
         }
 
         try {
-            $parsedResponse = json_decode(
-                $response->getBody()->getContents(), false, 512, JSON_THROW_ON_ERROR
-            );
+            $responseBody = $response->getBody()->getContents();
+        } catch (RuntimeException $exception) {
+            throw DicionarioAbertoClientException::searchFailure($word, $exception);
+        }
+
+        try {
+            $parsedResponse = json_decode($responseBody, false, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $exception) {
             throw DicionarioAbertoClientException::searchFailure($word, $exception);
         }

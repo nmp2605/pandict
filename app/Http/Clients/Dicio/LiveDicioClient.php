@@ -5,6 +5,7 @@ namespace App\Http\Clients\Dicio;
 use DOMDocument;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\RequestException;
+use RuntimeException;
 
 class LiveDicioClient implements DicioClientInterface
 {
@@ -23,7 +24,11 @@ class LiveDicioClient implements DicioClientInterface
             throw DicioClientException::searchFailure($word, $e);
         }
 
-        $responseContents = $response->getBody()->getContents();
+        try {
+            $responseContents = $response->getBody()->getContents();
+        } catch (RuntimeException $exception) {
+            throw DicioClientException::searchFailure($word, $exception);
+        }
 
         if (empty($responseContents)) {
             throw DicioClientException::searchFailure($word);

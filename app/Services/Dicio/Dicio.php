@@ -47,6 +47,7 @@ class Dicio implements DictionaryServiceInterface
         // Explore different word pages to make sure the result pops up.
     }
 
+    /** @throws DicioException */
     private function parseResults(DOMDocument $resultPage, string $word): Collection
     {
         return Collection::make($this->getResultNodes($resultPage, $word))
